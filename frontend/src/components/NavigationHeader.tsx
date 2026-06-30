@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useAuth } from '@/components/AuthContext';
 
 export function NavigationHeader() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <header className="header" style={{ justifyContent: 'space-between', padding: '12px 24px' }}>
@@ -16,6 +16,11 @@ export function NavigationHeader() {
         <Link href="/dashboard" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontWeight: 500, fontSize: '14px' }}>
           Dashboard
         </Link>
+        {user?.role === 'admin' && (
+          <Link href="/admin" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontWeight: 500, fontSize: '14px' }}>
+            Admin
+          </Link>
+        )}
         <Link href="/profile" style={{ textDecoration: 'none', color: 'var(--text-dark)', fontWeight: 500, fontSize: '14px' }}>
           Profile
         </Link>

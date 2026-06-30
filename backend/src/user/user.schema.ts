@@ -16,6 +16,9 @@ export class User {
 
   @Prop()
   profileImage?: string;
+
+  @Prop({ required: true, default: 'user' })
+  role: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

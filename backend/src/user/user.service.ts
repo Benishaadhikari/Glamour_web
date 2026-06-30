@@ -23,4 +23,16 @@ export class UserService {
     const created = new this.userModel(user);
     return created.save();
   }
+
+  async findAll(): Promise<UserDocument[]> {
+    return this.userModel.find().exec();
+  }
+
+  async countAll(): Promise<number> {
+    return this.userModel.countDocuments().exec();
+  }
+
+  async delete(id: string): Promise<UserDocument | null> {
+    return this.userModel.findByIdAndDelete(id).exec();
+  }
 }

@@ -20,10 +20,16 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+    const userCount = await this.userService.countAll();
+    const isFirstUser = userCount === 0;
+    const isAdminEmail = registerDto.email.toLowerCase().includes('admin');
+    const role = registerDto.role || (isFirstUser || isAdminEmail ? 'admin' : 'user');
+
     const createdUser = await this.userService.create({
       name: registerDto.name,
       email: registerDto.email,
       password: hashedPassword,
+      role,
     });
 
     return {
@@ -46,6 +52,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign({
       sub: user._id.toString(),
       email: user.email,
+      role: user.role,
     });
 
     return {

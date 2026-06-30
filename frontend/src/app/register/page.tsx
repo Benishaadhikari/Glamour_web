@@ -12,6 +12,7 @@ export default function RegisterPage() {
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"user" | "admin">("user");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -28,6 +29,7 @@ export default function RegisterPage() {
     if (
       !fullName ||
       !email ||
+      !role ||
       !password ||
       !confirmPassword
     ) {
@@ -49,7 +51,7 @@ export default function RegisterPage() {
 
     try {
       setLoading(true);
-      await registerAction({ name: fullName, email, password, confirmPassword });
+      await registerAction({ name: fullName, email, role, password, confirmPassword });
       window.alert("Signup Successful! Please login.");
       router.push("/login");
     } catch (err: unknown) {
@@ -129,6 +131,40 @@ export default function RegisterPage() {
                     }
                     required
                   />
+                </div>
+              </div>
+
+              {/* Role Select */}
+              <div className="field-group">
+                <label
+                  htmlFor="role"
+                  className="field-label"
+                >
+                  Role
+                </label>
+
+                <div className="input-wrapper">
+                  <select
+                    id="role"
+                    className="field-input"
+                    style={{
+                      appearance: 'none',
+                      backgroundImage: 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b3545\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")',
+                      backgroundRepeat: 'no-repeat',
+                      backgroundPosition: 'right 16px center',
+                      backgroundSize: '16px',
+                      paddingRight: '40px',
+                      cursor: 'pointer'
+                    }}
+                    value={role}
+                    onChange={(e) =>
+                      setRole(e.target.value as "user" | "admin")
+                    }
+                    required
+                  >
+                    <option value="user">Member (User)</option>
+                    <option value="admin">Administrator (Admin)</option>
+                  </select>
                 </div>
               </div>
 

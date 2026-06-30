@@ -22,6 +22,7 @@ export async function registerUser(payload: {
   name: string;
   email: string;
   password: string;
+  role: string;
 }) {
   const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
@@ -29,7 +30,7 @@ export async function registerUser(payload: {
     body: JSON.stringify(payload),
   });
 
-  return handleResponse<{ message: string; user: { _id: string; name: string; email: string } }>(response);
+  return handleResponse<{ message: string; user: { _id: string; name: string; email: string; role: string } }>(response);
 }
 
 export async function loginUser(payload: {
@@ -42,7 +43,7 @@ export async function loginUser(payload: {
     body: JSON.stringify(payload),
   });
 
-  return handleResponse<{ accessToken: string; user: { _id: string; name: string; email: string } }>(response);
+  return handleResponse<{ accessToken: string; user: { _id: string; name: string; email: string; role: string } }>(response);
 }
 
 export async function getWhoAmI() {
@@ -56,7 +57,7 @@ export async function getWhoAmI() {
     },
   });
 
-  return handleResponse<{ _id: string; name: string; email: string; profileImage?: string }>(response);
+  return handleResponse<{ _id: string; name: string; email: string; role: string; profileImage?: string }>(response);
 }
 
 export async function updateProfile(formData: FormData) {
@@ -71,5 +72,104 @@ export async function updateProfile(formData: FormData) {
     body: formData,
   });
 
-  return handleResponse<{ message: string; user: { _id: string; name: string; email: string; profileImage?: string } }>(response);
+  return handleResponse<{ message: string; user: { _id: string; name: string; email: string; role: string; profileImage?: string } }>(response);
+}
+
+export interface UserInfo {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  profileImage?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export async function getUsers() {
+  const token = Cookies.get('token');
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_BASE_URL}/auth/users`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return handleResponse<UserInfo[]>(response);
+}
+
+export async function updateUserRole(userId: string, role: string) {
+  const token = Cookies.get('token');
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_BASE_URL}/auth/users/${userId}/role`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ role }),
+  });
+
+  return handleResponse<{ message: string; user: UserInfo }>(response);
+}
+
+export async function deleteUser(userId: string) {
+  const token = Cookies.get('token');
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return handleResponse<{ message: string; user: UserInfo }>(response);
+}
+
+export async function adminCreateUser(payload: {
+  name: string;
+  email: string;
+  role: string;
+  password: string;
+}) {
+  const token = Cookies.get('token');
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_BASE_URL}/auth/users`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return handleResponse<{ message: string; user: UserInfo }>(response);
+}
+
+export async function adminEditUser(
+  userId: string,
+  payload: {
+    name?: string;
+    email?: string;
+    role?: string;
+    password?: string;
+  },
+) {
+  const token = Cookies.get('token');
+  if (!token) throw new Error('No token found');
+
+  const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  return handleResponse<{ message: string; user: UserInfo }>(response);
 }

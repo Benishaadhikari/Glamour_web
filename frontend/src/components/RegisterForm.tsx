@@ -81,6 +81,36 @@ export function RegisterForm() {
             </div>
 
             <div className="field-group">
+              <label htmlFor="role" className="field-label">
+                Role
+              </label>
+              <div className="input-wrapper">
+                <select
+                  id="role"
+                  className="field-input"
+                  style={{
+                    appearance: 'none',
+                    backgroundImage: 'url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%236b3545\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3E%3Cpath d=\'M6 9l6 6 6-6\'/%3E%3C/svg%3E")',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 16px center',
+                    backgroundSize: '16px',
+                    paddingRight: '40px',
+                    cursor: 'pointer'
+                  }}
+                  {...register('role')}
+                >
+                  <option value="user">Member (User)</option>
+                  <option value="admin">Administrator (Admin)</option>
+                </select>
+              </div>
+              {errors.role && (
+                <p className="field-error" role="alert">
+                  {errors.role.message}
+                </p>
+              )}
+            </div>
+
+            <div className="field-group">
               <label htmlFor="password" className="field-label">
                 Password
               </label>

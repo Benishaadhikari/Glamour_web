@@ -9,6 +9,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
+  role: string;
   profileImage?: string;
 }
 
@@ -57,7 +58,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     setUser(userData);
     setIsLoading(false);
-    router.push('/dashboard');
+    if (userData.role === 'admin') {
+      router.push('/admin');
+    } else {
+      router.push('/dashboard');
+    }
   };
 
   const logout = () => {
